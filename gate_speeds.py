@@ -32,7 +32,7 @@ sew_functions = {
 }
 
 def generate_activations(n=100,p=.5):
-    return (torch.rand(n**2) <= p).to(torch.float32).reshape((n,n)).to(device)
+    return (torch.rand(n**3) <= p).to(torch.float32).reshape((n,n,n)).to(device)
 
 def main():
     x = generate_activations(500)
