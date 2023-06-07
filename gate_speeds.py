@@ -54,10 +54,12 @@ sew_functions = {
     'NOR_DEFAULT': lambda x,y: 1-x-y+(x*y),
     'NOR_COND': lambda x,y: (x+y==0.).to(x),
     'NOR_WHERE': nor_where,
+    'XOR_LONG': lambda x,y: (x+y)*(1-x*y),
     'XOR_DEFAULT': lambda x,y: x+y-(2*x*y),
     'XOR_MOD': lambda x,y: (x+y)%2,
     'XOR_COND': lambda x,y: (x+y==1.).to(x),
     'XOR_WHERE': xor_where,
+    'XNOR_LONG': lambda x,y: 1-(x+y)*(1-x*y),
     'XNOR_DEFAULT': lambda x,y: 1-x-y+(2*x*y),
     'XNOR_MOD': lambda x,y: 1-((x+y)%2),
     'XNOR_COND': lambda x,y: (x+y!=1.).to(x),
@@ -65,7 +67,7 @@ sew_functions = {
 }
 
 def generate_activations(n=100,p=.5):
-    return (torch.rand(n**3) <= p).to(torch.float32).reshape((n,n,n)).to(device)
+    return (torch.rand(n**2) <= p).to(torch.float32).reshape((n,n)).to(device)
 
 def main():
     x = generate_activations(500)
@@ -73,7 +75,7 @@ def main():
     times = {}
     for cnf_name, cnf in tqdm(sew_functions.items()):
         cnf_name = tuple(cnf_name.split('_'))
-        times[cnf_name] = {'time':timeit.timeit(partial(cnf,x,y),number=1000)}
+        times[cnf_name] = {'time':timeit.timeit(partial(cnf,x,y),number=10000)}
     df = pd.DataFrame.from_dict(times,orient='index')
     df.index = pd.MultiIndex.from_tuples(df.index,names=['cnf','implementation'])
     df.to_csv(f'{device}_times.csv',index=True)
