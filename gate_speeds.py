@@ -45,6 +45,7 @@ sew_functions = {
     'IAND_COND': lambda x,y: (x-y>0.).to(x),
     'IAND_WHERE': iand_where,
     'NAND_DEFAULT': lambda x,y: 1-(x*y),
+    'NAND_DEFAULT+': lambda x,y: ((x*y)-1).abs(),
     'NAND_RELU': lambda x,y: 1-nn.functional.relu(x+y-1),
     'NAND_COND': lambda x,y: (x+y<=1.).to(x),
     'NAND_WHERE': nand_where,
